@@ -1,6 +1,7 @@
 {
 	"name": "nathanpc/fantastique",
 	"description": "An un-opinionated static website generator for PHP",
+	"license": "MPL-2.0",
 	"authors": [
 		{
 			"name": "Nathan Campos",
