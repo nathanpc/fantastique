@@ -3,6 +3,7 @@
 namespace Fantastique;
 
 use Fantastique\Exceptions\PathException;
+use Fantastique\Exceptions\RenderException;
 
 /**
  * The main abstraction of a static page to be generated.
@@ -51,17 +52,44 @@ class Page {
 	/**
 	 * Renders the file to its final destination.
 	 *
+	 * @param string $output_root Path of the static website output folder.
+	 *
 	 * @return Page Ourselves for composability reasons.
+	 *
+	 * @throws PathException if we cannot make the directory to output to.
+	 * @throws RenderException if something goes wrong with rendering.
 	 */
-	public function render(): Page {
-		// Render the template out to a string.
-		ob_start();
-		include_once($this->source);
-		$content = ob_get_contents();
-		ob_end_clean();
+	public function render(string $output_root): Page {
+		$content = null;
+		echo "Rendering {$this->source} to $output_root{$this->path}/" .
+			"{$this->filename}\n";
 
-		// TODO: Write out to the file.
-		print_r($content);
+		try {
+			// Render the template out to a string.
+			ob_start();
+			include_once($this->source);
+			$content = ob_get_contents();
+			ob_end_clean();
+		} catch (\Exception $e) {
+			throw new RenderException('Rendering failed due to an exception: ' .
+				$e, $this, $e);
+		}
+
+		// Ensure we have the directory to output to.
+		$outdir = "$output_root{$this->path}";
+		if (!is_dir($outdir)) {
+			if (!mkdir($outdir, 0755, true)) {
+				throw new PathException('Failed to create directory ' .
+					"($outdir) to render to");
+			}
+		}
+
+		// Write the rendered contents to a file.
+		$outfile = "$outdir/{$this->filename}";
+		if (file_put_contents($outfile, $content) === false) {
+			throw new RenderException('Failed to write the rendered contents ' .
+				"to the file ($outfile)", $this);
+		}
 
 		return $this;
 	}

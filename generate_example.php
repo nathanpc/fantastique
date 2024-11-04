@@ -9,7 +9,10 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use \Fantastique\Page;
+use \Fantastique\Builder;
 
-$page = (new Page('./example', './example/index.php'))->render();
-$page = (new Page('./example', './example/about.php'))->render();
+// Get our builder helper.
+$builder = new Builder(__DIR__ . '/example', __DIR__ . '/build');
+
+// Render the example folder.
+$builder->render_folder(__DIR__ . '/example');
