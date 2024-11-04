@@ -15,5 +15,8 @@
 		"psr-4": {
 			"Fantastique\\": "src/"
 		}
+	},
+	"archive": {
+		"exclude": ["build/", "example/", "generate_example.php"]
 	}
 }
