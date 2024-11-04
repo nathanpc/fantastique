@@ -1,0 +1,19 @@
+{
+	"name": "nathanpc/fantastique",
+	"description": "An un-opinionated static website generator for PHP",
+	"authors": [
+		{
+			"name": "Nathan Campos",
+			"email": "nathan@innoveworkshop.com",
+			"homepage": "https://nathancampos.me/"
+		}
+	],
+	"require": {
+		"php": "^8.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"Fantastique\\": "src/"
+		}
+	}
+}
