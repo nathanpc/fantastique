@@ -1,0 +1,12 @@
+/**
+ * style.css
+ * Example of a static file.
+ */
+
+body {
+    font-family: 'Courier New', monospace;
+}
+
+h1 {
+    color: firebrick;
+}

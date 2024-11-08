@@ -3,6 +3,7 @@
 namespace Fantastique;
 
 use Fantastique\Exceptions\Exception;
+use Fantastique\Exceptions\PathException;
 
 /**
  * Helper class to aid in building the website generator.
@@ -20,6 +21,20 @@ class Builder {
 	public function __construct(string $base_path, string $output_path) {
 		$this->base_path = $base_path;
 		$this->output_path = $output_path;
+	}
+
+	/**
+	 * Duplicates a folder with static assets to serve as the basis for the
+	 * build directory.
+	 *
+	 * @param string $static_folder Static folder to duplicate as the basis of
+	 *                              the build directory.
+	 *
+	 * @throws PathException if a file operation fails.
+	 */
+	public function copy_static(string $static_folder): void {
+		echo "Copying static files from $static_folder\n";
+		$this->copy_folder(realpath($static_folder), $this->output_path);
 	}
 
 	/**
@@ -75,7 +90,7 @@ class Builder {
 	 *
 	 * @return Page Generated page object.
 	 *
-	 * @throws Exceptions\Exception if an error occurs while generating the page.
+	 * @throws Exception if an error occurs while generating the page.
 	 */
 	public function make_page(string $source): Page {
 		return new Page($this->base_path, $source);
@@ -88,9 +103,54 @@ class Builder {
 	 *
 	 * @return Page Rendered page object.
 	 *
-	 * @throws Exceptions\Exception if an error occurs while rendering the page.
+	 * @throws Exception if an error occurs while rendering the page.
 	 */
 	public function render_page(string $source): Page {
 		return $this->make_page($source)->render($this->output_path);
+	}
+
+	/**
+	 * Copies the contents of an entire folder to another location recursively.
+	 *
+	 * @param string $source Source folder to be copied over.
+	 * @param string $dest   Destination folder.
+	 *
+	 * @throws PathException if a file operation fails.
+	 */
+	protected function copy_folder(string $source, string $dest): void {
+		// Ensure we have a destination folder.
+		if (!is_dir($dest)) {
+			if (!mkdir($dest, 0755, true)) {
+				throw new PathException("Failed to create directory ($dest) " .
+					'for copying');
+			}
+		}
+
+		// Open the directory and go through its contents.
+		$dh = opendir($source);
+		while (($fname = readdir($dh)) !== false) {
+			// Ignore current and parent directory.
+			if (($fname === '.') || ($fname === '..'))
+				continue;
+
+			// Make source and destination paths.
+			$src_path = "$source/$fname";
+			$dest_path = "$dest/$fname";
+
+			// Copy file or recurse over directories.
+			if (is_dir($src_path)) {
+				echo "Copying folder $src_path to $dest_path\n";
+				$this->copy_folder($src_path, $dest_path);
+			} else {
+				echo "Copying static file from $src_path to $dest_path\n";
+				if (!copy($src_path, $dest_path)) {
+					throw new PathException('Failed to copy file from ' .
+						"$src_path to $dest_path");
+				}
+			}
+		}
+
+		// Close the directory handle.
+		closedir($dh);
 	}
 }

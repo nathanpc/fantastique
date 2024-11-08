@@ -7,6 +7,7 @@ $this->fill(array(
 <html lang="en">
 <head>
 	<title><?= $this->title ?></title>
+	<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 	<h1>It works!</h1>
