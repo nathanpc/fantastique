@@ -67,7 +67,7 @@ class Page {
 		try {
 			// Render the template out to a string.
 			ob_start();
-			include_once($this->source);
+			include($this->source);
 			$content = ob_get_contents();
 			ob_end_clean();
 		} catch (\Exception $e) {
