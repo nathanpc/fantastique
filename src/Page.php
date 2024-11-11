@@ -13,7 +13,7 @@ class Page {
 	public ?string $description;
 	public string $path;
 	public string $filename;
-	public readonly string $source;
+	public string $source;
 	public ?array $context;
 
 	/**
