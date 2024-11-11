@@ -19,6 +19,6 @@ $builder->copy_static(__DIR__ . '/static');
 
 // Render the example folder.
 $builder->render_folder(__DIR__ . '/example', true, ['context.php']);
-$builder->render_page(__DIR__ . '/example/context.php', [
+$builder->render_page($builder->base_path . '/context.php', [
 	'something' => 'extra context!'
 ]);

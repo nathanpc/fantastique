@@ -9,11 +9,11 @@ use Fantastique\Exceptions\RenderException;
  * The main abstraction of a static page to be generated.
  */
 class Page {
-	protected ?string $title;
-	protected ?string $description;
-	protected string $path;
-	protected string $filename;
-	protected string $source;
+	public ?string $title;
+	public ?string $description;
+	public string $path;
+	public string $filename;
+	public readonly string $source;
 	public ?array $context;
 
 	/**

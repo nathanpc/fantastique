@@ -9,8 +9,8 @@ use Fantastique\Exceptions\PathException;
  * Helper class to aid in building the website generator.
  */
 class Builder {
-	private string $base_path;
-	private string $output_path;
+	public readonly string $base_path;
+	public readonly string $output_path;
 
 	/**
 	 * Constructs a new website builder helper object.
