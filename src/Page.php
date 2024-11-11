@@ -14,7 +14,7 @@ class Page {
 	protected string $path;
 	protected string $filename;
 	protected string $source;
-	public array $context;
+	public ?array $context;
 
 	/**
 	 * Sets up a page for static generation using a source file.
@@ -29,7 +29,7 @@ class Page {
 		$this->title = null;
 		$this->description = null;
 		$this->filename = 'index.html';
-		$this->context = array();
+		$this->context = null;
 
 		// Build up the path.
 		$path_parts = pathinfo($this->relpath($base_path, $source));
@@ -53,16 +53,21 @@ class Page {
 	 * Renders the file to its final destination.
 	 *
 	 * @param string $output_root Path of the static website output folder.
+	 * @param ?array $context     Extra context to the page to be rendered.
 	 *
 	 * @return Page Ourselves for composability reasons.
 	 *
 	 * @throws PathException if we cannot make the directory to output to.
 	 * @throws RenderException if something goes wrong with rendering.
 	 */
-	public function render(string $output_root): Page {
+	public function render(string $output_root, array $context = null): Page {
 		$content = null;
 		echo "Rendering {$this->source} to $output_root{$this->path}/" .
 			"{$this->filename}\n";
+
+		// Ensure we have some context.
+		$this->context = is_null($this->context) ? $context :
+			array_merge($this->context, $context);
 
 		try {
 			// Render the template out to a string.

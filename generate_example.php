@@ -18,4 +18,7 @@ $builder = new Builder(__DIR__ . '/example', __DIR__ . '/build');
 $builder->copy_static(__DIR__ . '/static');
 
 // Render the example folder.
-$builder->render_folder(__DIR__ . '/example');
+$builder->render_folder(__DIR__ . '/example', true, ['context.php']);
+$builder->render_page(__DIR__ . '/example/context.php', [
+	'something' => 'extra context!'
+]);

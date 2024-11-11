@@ -40,15 +40,16 @@ class Builder {
 	/**
 	 * Renders the contents of an entire folder.
 	 *
-	 * @param string $folder Folder to be rendered out.
-	 * @param bool $recursive Should we also render the contents of its
-	 *                              sub-folders?
-	 * @param array|null $exclude List of file or folder names to not render.
+	 * @param string $folder    Folder to be rendered out.
+	 * @param bool   $recursive Should we also render the contents of its
+	 *                          sub-folders?
+	 * @param ?array $exclude   List of file or folder names to not render.
 	 *
 	 * @throws Exception if an error occurs while rendering a page.
 	 */
 	public function render_folder(string $folder, bool $recursive = true,
-	                              ?array $exclude = null): void {
+	                              array $exclude = null,
+	                              array $context = null): void {
 		echo "Entering $folder\n";
 
 		// Open the directory and go through its contents.
@@ -70,12 +71,12 @@ class Builder {
 			$fpath = "$folder/$fname";
 			if (is_dir($fpath)) {
 				if ($recursive)
-					$this->render_folder($fpath, true, $exclude);
+					$this->render_folder($fpath, true, $exclude, $context);
 				continue;
 			}
 
 			// Render the page.
-			$this->render_page($fpath);
+			$this->render_page($fpath, $context);
 			skip:
 		}
 
@@ -99,14 +100,15 @@ class Builder {
 	/**
 	 * Creates a new page object from a source file path and renders it.
 	 *
-	 * @param string $source Path to the page's source file.
+	 * @param string $source  Path to the page's source file.
+	 * @param ?array $context Extra context to the page to be rendered.
 	 *
 	 * @return Page Rendered page object.
 	 *
 	 * @throws Exception if an error occurs while rendering the page.
 	 */
-	public function render_page(string $source): Page {
-		return $this->make_page($source)->render($this->output_path);
+	public function render_page(string $source, array $context = null): Page {
+		return $this->make_page($source)->render($this->output_path, $context);
 	}
 
 	/**
