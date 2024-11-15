@@ -11,16 +11,20 @@ use Fantastique\Exceptions\PathException;
 class Builder {
 	public readonly string $base_path;
 	public readonly string $output_path;
+	public string $page_class;
 
 	/**
 	 * Constructs a new website builder helper object.
 	 *
 	 * @param string $base_path   Base path of the website source files.
 	 * @param string $output_path Root folder to store the static website files.
+	 * @param string $page_class  Name of the class to use for generating pages.
 	 */
-	public function __construct(string $base_path, string $output_path) {
+	public function __construct(string $base_path, string $output_path,
+	                            string $page_class = "Fantastique\Page") {
 		$this->base_path = $base_path;
 		$this->output_path = $output_path;
+		$this->page_class = $page_class;
 	}
 
 	/**
@@ -94,7 +98,7 @@ class Builder {
 	 * @throws Exception if an error occurs while generating the page.
 	 */
 	public function make_page(string $source): Page {
-		return new Page($this->base_path, $source);
+		return new $this->page_class($this->base_path, $source);
 	}
 
 	/**
